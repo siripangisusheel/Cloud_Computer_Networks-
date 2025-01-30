@@ -59,3 +59,6 @@ comment out the following line
 systemctl restart postfix.service
 echo "Test Mail" | mail -s "Postfix TEST"
 -a test.txt paul@gmail.com
+
+To check filelog how may mails were sent
+less /var/log/maillog
