@@ -1,0 +1,64 @@
+Introduction to SSL and TLS:
+
+What is SSL?
+
+
+Confidentiality Data is only accessed by client/server
+Integrity
+Data is not modified in between
+Authentication
+Encryption
+Hashing
+Verifying the identity of the parties who they are supposed to be.
+certificates
+
+Encryption:
+What is encryption and why it’s important?
+How SSL/TLS uses encryption to secure data
+Types of Encryption
+symmetric encryption and asymmetric encryption
+hybrid encryption
+
+Hashing:
+Understanding hashing and its role in SSL/TLS
+Difference between encryption and hashing
+Message Authentication Code (MAC) based hashing
+
+SSL Certificates:
+What are SSL certificates?
+Role of Certificate Authorities (CA)
+Types of SSL certificates
+
+Public & Private Keys:
+What are public and private keys?
+
+How they work together in SSL/TLS
+
+How SSL/TLS secures online communication
+Importance of using SSL/TLS on websites
+
+
+Symmetric vs Asymmetric
+Symmetric:
+• Faster and more efficient, suitable for large data.
+•
+Challenging key distribution, single key must be kept secret.
+ASymmetric:
+• Slower, suitable for small data.
+Simplified key distribution, secure even if the public key is sharing 
+
+
+Some Algo Examples
+Asymmetric
+• DSA
+• RSA
+ECC
+ECDH
+
+Symmetric
+• AES
+• 3DES
+• RC4
+
+follow the below URL to create your own certificate with OpenssL:
+https://deliciousbrains.com/ssl-certificate-authority-for-local-https-development/
