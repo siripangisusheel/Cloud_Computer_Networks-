@@ -1,0 +1,61 @@
+Sending the mail through Linux
+
+Topics
+• PostFIX Setup on Linux Centos
+• Edit Configuration for Google SMTP
+• How to send email
+• How to attach a file in email
+
+Steps to configure Postfix
+sudo yum -y install postfix
+sudo yum -y install mailx
+rpa -qa | grep postfix --To check weather postfix is installed 
+
+Postfix configuration 
+/etc/postfix/main.cf
+cp main.cf main.cf.bkp
+check for hostname by typing hostname -f
+vi main.cf
+Add the following lines below relayhost lastline and hostname below hostname
+relayhost = [smtp.gmail.com]:587
+myhostname= <your_hostname>
+
+Add the following lines at end 
+
+Add the following lines
+# Location of sasl_passwd we saved
+smtp_sasl_password_maps = hash:/etc/postfix/sasl/sasl_passwd
+# Enables SASL authentication for postfix
+smtp_sasl_auth_enable = yes smtp_tls_security_level = encrypt
+# Disallow methods that allow anonymous authentication smtp_sasl_security_options = noanonymous
+
+Create the sasl_passwd file at below location:
+/etc/postfix/sasl/sasl_passwd
+Add the content in the below file 
+[smtp.gmail.com]:587 youremail@gmail.com:yourpassword
+for password go to gmail>manageaccount>security>Enable two-step-verification 
+in the same above location search for apps password enter the password 
+select app under dropdown select other and type SMPT
+click on generate > copy the one time password and put it in the yourpassword content in sasl_password file
+convert the sasl_password file into db file
+postmap /etc/postfix/sasl/sasl_passwd
+chmod 600 * to change file permissions 
+For the security, change the file owner hip
+chown root:root /etc/postfix/sasl/sasl_passwd 
+chmod 600 /etc/postfix/sasl/sasl_passwd
+Start the Postfix service
+systemctl start/enable postfix 
+systemctl stop/disable postfix 
+systemctl restart postfix
+
+How to send email
+echo "Test Mail" | mail -s "Postfix TEST"
+paul@gmail.com
+
+for attaching a file while sending the mail 
+vi /etc/postfix/main.cf
+comment out the following line 
+#smtp_tls_security_level = may
+systemctl restart postfix.service
+echo "Test Mail" | mail -s "Postfix TEST"
+-a test.txt paul@gmail.com
