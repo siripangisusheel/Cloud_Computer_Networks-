@@ -1,0 +1,18 @@
+Classless Addressing (CIDR) - Very Important
+No fixed classes
+Only blocks of addresses
+Notation: x.y.z.w/n
+
+Example:
+200.10.20.4/28
+Binary Representation: 200.10.20 (00101100 00001010 00010100)
+Network Address Calculation:
+Network Address: 200.10.20.32/28
+Subnet Mask: 255.255.255.240
+Binary Representation of Mask: 11111111.11111111.11111111.11110000
+
+Important Rules:
+Addresses should be contiguous.
+The number of addresses in a block must be in the power of 2.
+The first address of every block must be evenly divisible by the size of the block.
+
