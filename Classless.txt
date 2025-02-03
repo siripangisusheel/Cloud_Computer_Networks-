@@ -1,0 +1,302 @@
+**Class A in IP Addressing**
+
+An IP address consists of **32 bits**, divided into different classes. Class A addresses are structured as follows:
+
+### Structure of Class A Address:
+- The first bit is fixed as 0****.
+- The first **8 bits (1st octet)** represent the **Network ID**.
+- The remaining **24 bits (3 octets)** represent the **Host ID**.
+
+### Range of Class A:
+- The first octet ranges from **0 to 127**.
+- However, **0 and 127** are reserved and not used for network assignment.
+
+### Example of a Class A IP Address:
+- **64.0.0.0** (Example IP address)
+- **64.255.255.255** (Example Broadcast Address)
+
+### Total Number of IP Addresses in Class A:
+- Maximum possible IP addresses: **2^31**
+- Number of Networks in Class A: **2^7 = 128 - 2 = 126** (excluding 0 and 127)
+- Number of Hosts per Network: **2^24 - 2** (excluding Network and Broadcast addresses)
+
+**Class B in IP Addressing**
+
+An IP address consists of **32 bits**, divided into different classes. Class B addresses are structured as follows:
+
+### Structure of Class B Address:
+- The first **two bits** are fixed as **10**.
+- The first **16 bits (2 octets)** represent the **Network ID**.
+- The remaining **16 bits (2 octets)** represent the **Host ID**.
+
+### Range of Class B:
+- The first octet ranges from **128 to 191**.
+
+### Example of a Class B IP Address:
+- **130.2.0.0** (Example IP address)
+- **130.255.255.255** (Example Broadcast Address)
+
+### Total Number of IP Addresses in Class B:
+- Maximum possible IP addresses: **2^30**
+- Number of Networks in Class B: **2^14 = 16384**
+- Number of Hosts per Network: **2^16 - 2 = 65534** (excluding Network and Broadcast addresses)
+
+### Binary to Decimal Conversion Example:
+- **1011 in binary** = **(1 × 2^3) + (0 × 2^2) + (1 × 2^1) + (1 × 2^0) = 8 + 0 + 2 + 1 = 11**
+
+**Class B in IP Addressing**
+
+An IP address consists of **32 bits**, divided into different classes. Class B addresses are structured as follows:
+
+### Structure of Class B Address:
+- The first **two bits** are fixed as **10**.
+- The first **16 bits (2 octets)** represent the **Network ID**.
+- The remaining **16 bits (2 octets)** represent the **Host ID**.
+
+### Range of Class B:
+- The first octet ranges from **128 to 191**.
+
+### Example of a Class B IP Address:
+- **130.2.0.0** (Example IP address)
+- **130.255.255.255** (Example Broadcast Address)
+
+### Total Number of IP Addresses in Class B:
+- Maximum possible IP addresses: **2^30**
+- Number of Networks in Class B: **2^14 = 16384**
+- Number of Hosts per Network: **2^16 - 2 = 65534** (excluding Network and Broadcast addresses)
+
+### Binary to Decimal Conversion Example:
+- **1011 in binary** = **(1 × 2^3) + (0 × 2^2) + (1 × 2^1) + (1 × 2^0) = 8 + 0 + 2 + 1 = 11**
+
+---
+
+**Class C in IP Addressing**
+
+Class C IP addresses are designed for small networks. The structure of a Class C address is as follows:
+
+### Structure of Class C Address:
+- The first **three bits** are fixed as **110**.
+- The first **24 bits (3 octets)** represent the **Network ID**.
+- The remaining **8 bits (1 octet)** represent the **Host ID**.
+
+### Range of Class C:
+- The first octet ranges from **192 to 223**.
+
+### Example of a Class C IP Address:
+- **194.2.3.4** (Example IP address)
+- **194.2.3.0** (Network ID)
+- **255.255.255.0** (Subnet Mask)
+
+### Total Number of IP Addresses in Class C:
+- Maximum possible IP addresses: **2^29**
+- Number of Networks in Class C: **2^21 = 2,097,152**
+- Number of Hosts per Network: **2^8 - 2 = 254** (excluding Network and Broadcast addresses)
+
+**Class B in IP Addressing**
+
+An IP address consists of **32 bits**, divided into different classes. Class B addresses are structured as follows:
+
+### Structure of Class B Address:
+- The first **two bits** are fixed as **10**.
+- The first **16 bits (2 octets)** represent the **Network ID**.
+- The remaining **16 bits (2 octets)** represent the **Host ID**.
+
+### Range of Class B:
+- The first octet ranges from **128 to 191**.
+
+### Example of a Class B IP Address:
+- **130.2.0.0** (Example IP address)
+- **130.255.255.255** (Example Broadcast Address)
+
+### Total Number of IP Addresses in Class B:
+- Maximum possible IP addresses: **2^30**
+- Number of Networks in Class B: **2^14 = 16384**
+- Number of Hosts per Network: **2^16 - 2 = 65534** (excluding Network and Broadcast addresses)
+
+### Binary to Decimal Conversion Example:
+- **1011 in binary** = **(1 × 2^3) + (0 × 2^2) + (1 × 2^1) + (1 × 2^0) = 8 + 0 + 2 + 1 = 11**
+
+---
+
+**Class C in IP Addressing**
+
+Class C IP addresses are designed for small networks. The structure of a Class C address is as follows:
+
+### Structure of Class C Address:
+- The first **three bits** are fixed as **110**.
+- The first **24 bits (3 octets)** represent the **Network ID**.
+- The remaining **8 bits (1 octet)** represent the **Host ID**.
+
+### Range of Class C:
+- The first octet ranges from **192 to 223**.
+
+### Example of a Class C IP Address:
+- **194.2.3.4** (Example IP address)
+- **194.2.3.0** (Network ID)
+- **255.255.255.0** (Subnet Mask)
+
+### Total Number of IP Addresses in Class C:
+- Maximum possible IP addresses: **2^29**
+- Number of Networks in Class C: **2^21 = 2,097,152**
+- Number of Hosts per Network: **2^8 - 2 = 254** (excluding Network and Broadcast addresses)
+
+---
+
+**Classful Addressing**
+
+Classful addressing is a method used in early IP networking, dividing IP addresses into fixed classes. Here’s an example:
+
+### Given IP Address:
+- **201.20.30.40** (Belongs to Class C, as the first octet is between 192-223)
+
+### Network ID Calculation:
+- Given Subnet Mask: **255.255.255.0**
+- Network ID: **201.20.30.0**
+
+### Host and Broadcast Addresses:
+- 4th Host: **201.20.30.4**
+- Last Host: **201.20.30.254**
+- Broadcast Address: **201.20.30.255**
+
+### Types of Broadcast Addresses:
+- **Limited Broadcast Address:** **255.255.255.255**
+- **Direct Broadcast Address:** **201.20.30.255**
+
+---
+
+**Class D and Class E in IP Addressing**
+
+### Class D Addressing:
+- The first **four bits** are fixed as **1110**.
+- Class D is reserved for **Multicasting**.
+- There is no concept of Network ID and Host ID.
+- IP Range: **224 - 239**.
+- Number of IP addresses: **2^28 = 268,435,456**.
+
+### Class E Addressing:
+- The first **four bits** are fixed as **1111**.
+- Reserved for **experimental and military purposes**.
+- IP Range: **240 - 255**.
+- Number of IP addresses: **2^28 = 268,435,456** (same as Class D).
+
+**Class B in IP Addressing**
+
+An IP address consists of **32 bits**, divided into different classes. Class B addresses are structured as follows:
+
+### Structure of Class B Address:
+- The first **two bits** are fixed as **10**.
+- The first **16 bits (2 octets)** represent the **Network ID**.
+- The remaining **16 bits (2 octets)** represent the **Host ID**.
+
+### Range of Class B:
+- The first octet ranges from **128 to 191**.
+
+### Example of a Class B IP Address:
+- **130.2.0.0** (Example IP address)
+- **130.255.255.255** (Example Broadcast Address)
+
+### Total Number of IP Addresses in Class B:
+- Maximum possible IP addresses: **2^30**
+- Number of Networks in Class B: **2^14 = 16384**
+- Number of Hosts per Network: **2^16 - 2 = 65534** (excluding Network and Broadcast addresses)
+
+### Binary to Decimal Conversion Example:
+- **1011 in binary** = **(1 × 2^3) + (0 × 2^2) + (1 × 2^1) + (1 × 2^0) = 8 + 0 + 2 + 1 = 11**
+
+---
+
+**Class C in IP Addressing**
+
+Class C IP addresses are designed for small networks. The structure of a Class C address is as follows:
+
+### Structure of Class C Address:
+- The first **three bits** are fixed as **110**.
+- The first **24 bits (3 octets)** represent the **Network ID**.
+- The remaining **8 bits (1 octet)** represent the **Host ID**.
+
+### Range of Class C:
+- The first octet ranges from **192 to 223**.
+
+### Example of a Class C IP Address:
+- **194.2.3.4** (Example IP address)
+- **194.2.3.0** (Network ID)
+- **255.255.255.0** (Subnet Mask)
+
+### Total Number of IP Addresses in Class C:
+- Maximum possible IP addresses: **2^29**
+- Number of Networks in Class C: **2^21 = 2,097,152**
+- Number of Hosts per Network: **2^8 - 2 = 254** (excluding Network and Broadcast addresses)
+
+---
+
+**Classful Addressing**
+
+Classful addressing is a method used in early IP networking, dividing IP addresses into fixed classes. Here’s an example:
+
+### Given IP Address:
+- **201.20.30.40** (Belongs to Class C, as the first octet is between 192-223)
+
+### Network ID Calculation:
+- Given Subnet Mask: **255.255.255.0**
+- Network ID: **201.20.30.0**
+
+### Host and Broadcast Addresses:
+- 4th Host: **201.20.30.4**
+- Last Host: **201.20.30.254**
+- Broadcast Address: **201.20.30.255**
+
+### Types of Broadcast Addresses:
+- **Limited Broadcast Address:** **255.255.255.255**
+- **Direct Broadcast Address:** **201.20.30.255**
+
+---
+
+**Class D and Class E in IP Addressing**
+
+### Class D Addressing:
+- The first **four bits** are fixed as **1110**.
+- Class D is reserved for **Multicasting**.
+- There is no concept of Network ID and Host ID.
+- IP Range: **224 - 239**.
+- Number of IP addresses: **2^28 = 268,435,456**.
+
+### Class E Addressing:
+- The first **four bits** are fixed as **1111**.
+- Reserved for **experimental and military purposes**.
+- IP Range: **240 - 255**.
+- Number of IP addresses: **2^28 = 268,435,456** (same as Class D).
+
+---
+
+### Additional Classful Addressing Example
+
+#### Given IP Address:
+- **201.20.30.40**
+- Belongs to **Class C** (since the first octet falls between 192-223).
+
+#### Subnet Mask:
+- **255.255.255.0**
+
+#### Network ID Calculation:
+- IP Address: **201.20.30.40**
+- Subnet Mask: **255.255.255.0**
+- **Network ID:** **201.20.30.0**
+
+#### Host and Broadcast Address Calculation:
+- **4th Host:** **201.20.30.4**
+- **Last Host:** **201.20.30.254**
+- **Broadcast Address:** **201.20.30.255**
+
+#### Types of Broadcast Addresses:
+- **Limited Broadcast Address:** **255.255.255.255**
+- **Direct Broadcast Address:** **201.20.30.255**
+
+Problems with Classful Addressing:
+Wastage of IP addresses
+Maintenance is time-consuming
+More prone to errors
+Classful Addressing Ranges:
+Class A → 126 networks (2^7 - 1)
+Class B → 16K networks (2^14)
+Class C → 256 networks (2^8)
+Total Addresses → 1024
