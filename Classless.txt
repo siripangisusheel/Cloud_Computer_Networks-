@@ -300,3 +300,22 @@ Class A → 126 networks (2^7 - 1)
 Class B → 16K networks (2^14)
 Class C → 256 networks (2^8)
 Total Addresses → 1024
+
+Subnetting - Dividing a Big Network into Smaller Networks
+This is related to Class-C
+Range is 200.10.20.0
+As its class-C the first 3 bits are fixed, so divide the subnets from only last bit which is 200.10.20.0.0.0.0.0.0.0.0
+in the above fix the first 0 to divide it equally 
+
+Example : 200.10.20.0/.0.0.0.0.0.0.0 To 200.10.20.0/.1.1.1.1.1.1.1 Subnet-1
+200.10.20.1/.0.0.0.0.0.0.0 To 200.10.20.1/.0.0.0.0.0.0.0 Subnet-2
+
+Example:
+
+200.10.20.0 to 200.10.20.127 (First subnet)
+
+200.10.20.128 to 200.10.20.255 (Second subnet)
+
+Subnet Mask Calculation:
+
+Actual Subnet Mask: 255.255.255.128
