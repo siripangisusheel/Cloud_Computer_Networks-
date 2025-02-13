@@ -1,0 +1,123 @@
+**Virtual Cloud Network Networking Constructs**
+Virtual, private network set up in Oracle data centres, with firewall rules and specific types of communication gateways
+Resides in a single region
+Can have up to five nonoverlapping IPv4 CIDR blocks of your choice. Allowable range is from /30 to /16.
+CIDR blocks can be modified after VCNs are created.
+To create a vinic Navigation: Networking>VCN
+
+**Subnets**
+Instances are placed in subnets logically and draw their internal IP address and network configuration from their subnet.
+The Virtual Network Interface Card (VNIC) determines how the instance connects with endpoints inside and outside the VCN.
+To create a vinic Navigation: Networking>VCN>Subnets
+
+**Oracle VNIC**
+Oracle Cloud Infrastructure VNICS
+A VNIC enables an instance to connect to a VCN and determines how the instance connects with endpoints inside and outside the VCN. Each VNIC resides in a subnet in a VCN and includes these items:
+One primary private IPv4 address from the subnet in which the VNIC is, chosen by either you or Oracle.
+Up to 32 optional secondary private IPv4 addresses from the same subnet in which the VNIC is, chosen by either you or Oracle.
+To create a vinic Navigation: Compute>Instance>Instance Details> Attached-VINIC
+
+**Security List**
+A security list is a common set of firewall rules associated with a subnet and applied to instances launched inside the subnet.
+Stateful means only one side traffic is considered example if we put 0.0.0.0/0 in ingress then check the stateless as no, nothing should be added to egress 
+Stateless means two sides of traffic is considered example if we put 0.0.0.0/0 in ingress then check the stateless as yes even ingress the rules should be added as same 
+
+**Network Security Group**
+Network Security Group" (NSG) allows you to define security rules for a specific group of virtual network interface cards (VNICs), while a "Security List" applies security rules to all VNICs within a particular subnet
+NSG can be created and attached to VNIC so that its accessible via vnic
+To create a NSG Navigation: Compute>Networking> VCN>Network Security Group
+To Attach NSG to a VNIC: Compute>Instance>Instance Details> Attached-VINICs>NSG
+
+**Route Table**
+To create a Route Table:
+Compute>Networking> VCN> route tables
+it’s a connection between gateway and subnet 
+
+**Internet Gateway**
+Internet Gateway Is an optional virtual router you can add to your VCN to enable direct connectivity to the Internet
+To create an Internet gateway: Compute>Networking>VCN>route tables>Internet gateway 
+It can be only created in public subnet
+
+**NAT Gateway**
+To create an NAT gateway: Compute>Networking>VCN>route tables>route rule>NAT gateway
+Instances in a private subnet don't have public IP addresses.
+Add a NAT gateway to your VCN to give instances in a private subnet access to the Internet.
+NAT gateways are highly available and support TCP, UDP, and ICMP ping traffic
+
+**Local-Peering-gateway**
+Local VCN peering is the process of connecting two VCNs in the same region so that their resources can communicate by using private IP addresses.
+A local peering gateway (LPG) is a component on a VCN for routing traffic to a locally peered VCN.
+The two VCNS in the peering relationship shouldn't have overlapping
+To create a Local-Peering-gateway:Compute>Networking> VCN> Local-Peering-gateway> Create Local peering gateway>Establish Peering Connection
+VCN-1ADD Route Rule:Compute>Networking> VCN> route tables> route rule> Target Type LPG > Destination cidrblock(2nd VCN IP)> Target Local Peering Gateway(Select the 2nd VCN LPG Name)
+VCN-1ADD Security List to Pvt Subnet:Compute>Networking> VCN> Security List>ADD ICMP Rule of 2nd VCN to ping, In security list PVT of first VCN
+VCN-2
+VCN-2ADD Route Rule:Compute>Networking> VCN> route tables> route rule> Target Type LPG > Destination CIDRblock(1st VCN IP)> Target Local Peering Gateway(Select the 1st VCN LPG Name)
+VCN-2ADD Security List to Pub Subnet:Compute>Networking> VCN> Security List>ADD ICMP Rule of 1st VCN to ping, In security list pub of second VCN
+ssh -i mypvtkey UserName@ipadderess 
+
+**Dynamic Routing Gateway (DRG)**
+Dynamic Routing Gateway (DRG)
+DRG is a virtual router that provides a path for private traffic between your VCN and destinations other than the Internet.
+Use it to establish a connection with your on-premises network via FastConnect (private, dedicated connectivity) or Site-to-Site VPN connectivity (IPSec).
+DRG is a stand-alone object. You must attach a VCN to a DRG. Multiple VCNS can be attached to the same DRG. After attaching a DRG, you must add a route for the DRG in the VCN's route table to enable traffic flow.
+To create a Dynamic Routing Gateway:Networking> Customer-Connectivity>Dynamic-Routing-Gateway 
+To create a Dynamic Routing Gateway between Two VCN’s each one from different region VCN-1/VCN-2(Repeat the steps for both VCNS):
+1: Networking> Customer-Connectivity>Dynamic Routing Gateway>Create Virtual Cloud Network Attachment> Attachment Name(give an appropriate name)>VCN(Select the Vcn-name)
+2:Create Remote Peering gateway for the above:Networking> Customer-Connectivity>Dynamic Routing Gateway>Create Remote Peering Connection>Name(Give the Name)>Compartment
+3:Establish the remote Peering connection:Networking> Customer-Connectivity>Dynamic Routing Gateway>Create Remote Peering Connection>Establish-Connection>Region(Choose the Region of the other VCN)>Remote peering connection OCID(Paste the OCID of the Other VCN which should be attached).
+4:Create the Route Rule in VCN-1:Compute>Networking> VCN> route tables> route rule> Target Type DRG> Destination cidrblock(2nd VCN IP)> Target Dynamic Routing Gateway (Select the 2nd VCN DRG-Name)
+5:Add the IP address of other vcn to security list of first VCN:Networking>VCN>VCN-1>Security-list>(Add the other VCN Ip address)
+
+**Remote Peering Gateway (RPG)**
+The two VCNS in the peering relationship must not have overlapping CIDRS. Best Practice.
+Typically, RPC is for VCNs located in different regions, but it can also be used for VCNS in the same region too.
+The VCNS can be located in different tenancies.
+To create a Remote Peering Gateway For both Regions VCN-1/VCN-2:
+VCN-1
+1:VCN-Attachment:Networking> Customer-Connectivity>Dynamic-Routing-Gateway>DRG>Create VCN Attachment>Attachment-Name(create the name of the attachment VCN-Name )>VCN(Choose VCN)
+2:RPG-Peering-Attachment:Networking> Customer-Connectivity>Dynamic-Routing-Gateway)>DRG> RPG-Peering-Attachment>Name(Give Name of RPG>Attachment-Name>choose compartment.
+3:Establish the remote Peering connection:Networking> Customer-Connectivity>Dynamic Routing Gateway>Create Remote Peering Connection>Establish-Connection>Region(Choose the Region of the other VCN)>Remote peering connection OCID(Paste the OCID of the Other VCN which should be attached).
+4:ADD Security List to Pub Subnet:Compute>Networking> VCN> Security List>ADD ICMP Rule of 1st VCN to ping, In security list pub of second VCN
+VCN-2
+1:DRG-Attachment: Networking>VCN>Choose VCN>DRG-Attachments>Name(Give the name of DRG Attachment)>DRG(Choose the DRG Connection)
+2:RPG-Attachments: Networking> Customer-Connectivity>Dynamic Routing Gateway)>DRG> RPG-Peering-Attachment>Name(Give Name of RPG>Attachment-Name>choose compartment.
+3:Establish the remote Peering connection: Networking> Customer-Connectivity>Dynamic Routing Gateway>Create Remote Peering Connection>Establish-Connection>Region(Choose the Region of the other VCN)>Remote peering connection OCID(Paste the OCID of the Other VCN which should be attached).
+4:ADD Security List to Pub Subnet: Compute>Networking> VCN> Security List>ADD ICMP Rule of 1st VCN to ping, In security list pub of second VCN
+
+**Service Gateway**
+VCNS or on-premises networks access Oracle services public IP addresses without the need to route traffic via an Internet or NAT gateway, ensuring traffic is routed over Oracle's private backbone
+
+**Load-Balancers**
+OCI Load Balancing provides automated traffic distribution from one entry point to multiple servers reachable from your virtual cloud network (VCN).
+Load Balancer: Concepts
+Back-End Server
+Certificates
+Load Balancing Policy
+Shape
+Health Check
+
+Load Balancing Policies
+Round Robin
+Least Connections
+IP Hash
+Creation of Load-Balancer
+To Create a Load-Balancer: Networking>Load Balancer>CreateLoadBalancer>Name(Name of LB)>Public>Ephemeral IP>Flexible Shape>Min10>Max100mbps>VCN(Select a VCN)>Subnet(Select the subnet)>Next>WeightedRoundRobin>AddBackends>select the instances>Next>Http/80>Next>select the log group
+To Create a load-Balancer with reserved ip:
+To Create a load-Balancer with reserved ip:
+1:Create reserved Ip address: Networking>Ip management>ReservedPublicIpAddress>Name(Create a Name)>choose Ip Pool
+2:Create Load-Balancer:Networking>Load Balancer>CreateLoadBalancer>Name(Name of LB)>Public>Reserved IP >existing Ip address> choose the ip Address>Flexible Shape>Min10>Max1000mbps>VCN(Select a VCN)>Subnet(Select the subnet)>Next>WeightedRoundRobin>AddBackends>select the instances>Next>Http/80>Next>select the log group
+To Create a PVT-Load-Balancer:
+To Create a PVTLoad-Balancer: Networking>Load Balancer>CreateLoadBalancer>Name(Name of LB)>Private>Ephemeral IP>Flexible Shape>Min10>Max100mbps>VCN(Select a VCN)>Subnet(Select the subnet)>Next>WeightedRoundRobin>Add Backends>select the instances>Next>Http/80>Next>select the log group
+**Network-Load-Balancer**
+To Create a Network-load-Balancer with reserved ip:
+Networking>Network-Load Balancer>CreateLoadBalancer>Name (Name of LB)>Public> >VCN (Select a VCN)>Subnet (Select the subnet)>Next>Listener(TCP/UDP?ICMP)>Add Backends>select the instances>Next>TCP/22.
+
+**DNS**
+Domain Name System (DNS);
+The hierarchical and decentralized naming system Used to identify computers, services, and other resources reachable through the Internet or other Internet Protocol (IP) networks
+
+
+
+
+
