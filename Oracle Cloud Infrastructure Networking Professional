@@ -116,8 +116,14 @@ Networking>Network-Load Balancer>CreateLoadBalancer>Name (Name of LB)>Public> >V
 **DNS**
 Domain Name System (DNS);
 The hierarchical and decentralized naming system Used to identify computers, services, and other resources reachable through the Internet or other Internet Protocol (IP) networks
-To create DNS Names:Networking>DNS Management>Zones>Method(Manual)>ZoneType(Primary)>Zone-Name(www.example.com)>create in compartment(Name of compartement)
+To create DNS Names in public zone:1:Networking>DNS Management>Zones>Method(Manual)>ZoneType(Primary)>Zone-Name(www.example.com)>create in compartment(Name of compartement)
+To create Records in DNS:2:Networking>DNS Management>Zones>Select the DNS-Name>Records>manage Records>Name(Give the name Eg:www)>Type (AAA-Ipv4 Address)>Address(Add the Ip Address)
 
+Private DNS
+To create DNS Names in Private-Zone: Networking>DNS Management>choose private>Zones>Method (Manual)>ZoneType(Primary)>Zone-Name(www.example.com)>create a new private DNS-View(Name of View)
+To create Records in Private-DNS:2:Networking>DNS Management>Zones>Select the DNS-Name>Records>manage Records>Name(Give the name Eg:www)>Type (AAA-Ipv4 Address)>Address(Add the Ip Address)
+choose private resolver:Networiking>VCN>Private Resolver Details>Associate Private Views>Manage Private Views>Choose Private View.
 
-
-
+Forwarding DNS Resolver
+1:Forwarding DNS Resolver from one VCN to Another:  Networking>VCN>Private Resolver Details>Endpoints>Create EndPoint>Name(Forwarding)>Compartment(Select Comaprtment and choose subnet)> Add Ip Address
+2:Add Rules: Networking>VCN>Private Resolver Details>Rules>Manage Rules>Rule Condition(Domains)>Domains(WWW.example.com)>Source EndPoint(Forwarding)>Destination Ip Address(Provide the Ip Address)
