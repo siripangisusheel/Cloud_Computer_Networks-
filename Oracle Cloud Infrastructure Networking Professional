@@ -116,7 +116,7 @@ Networking>Network-Load Balancer>CreateLoadBalancer>Name (Name of LB)>Public> >V
 **DNS**
 Domain Name System (DNS);
 The hierarchical and decentralized naming system Used to identify computers, services, and other resources reachable through the Internet or other Internet Protocol (IP) networks
-
+To create DNS Names:Networking>DNS Management>Zones>Method(Manual)>ZoneType(Primary)>Zone-Name(www.example.com)>create in compartment(Name of compartement)
 
 
 
