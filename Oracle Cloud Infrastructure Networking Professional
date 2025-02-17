@@ -127,3 +127,7 @@ choose private resolver:Networiking>VCN>Private Resolver Details>Associate Priva
 Forwarding DNS Resolver
 1:Forwarding DNS Resolver from one VCN to Another:  Networking>VCN>Private Resolver Details>Endpoints>Create EndPoint>Name(Forwarding)>Compartment(Select Comaprtment and choose subnet)> Add Ip Address
 2:Add Rules: Networking>VCN>Private Resolver Details>Rules>Manage Rules>Rule Condition(Domains)>Domains(WWW.example.com)>Source EndPoint(Forwarding)>Destination Ip Address(Provide the Ip Address)
+
+Geolocation steering
+1:Observilabilityandmanagement>Monitering>HealthChecks>create health check>name of health check>compartement>Targets(choose targets)>Vantagepoints(choose vantage points)>Request Type(Http)>Method(GET)>Timeout Interval(30 sec)
+2:Networking>DNS Management>Traffic Steering Policies>Create Traffice management policies>geolocation steering>Policy Name(Give the name of policy)>Answerpoolname(Name of Pool)>Type(TypeA,B,C)>Rdata(put the ip address)>geolocation steering rules(Select geolocation)>Pool-Prority(choose the location prority)>Attach Health check>Select Existing>Request type(Http)>Compartment(Choose compartment)>health check(choose the backend)Attach domain(select domain)
