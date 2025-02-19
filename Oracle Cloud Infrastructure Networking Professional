@@ -140,3 +140,10 @@ To Create the site-to-site VPN:
 3:Skip source destination check: go to CPE Instance>Attached VNICS>edit VNIC>choose Skip source destination check
 4:Follow the below link to configure the liberswan in CPE Instance 
 https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/libreswan.htm
+
+Fast-Connect
+To Create the Fast-Connect Via private peering :	
+1:Create a CPE:Networking>Customer connectivity>Fast Connect>Create connection>Fast connect>partner(choose Equinix fabric)>Choose DRG>Provisioned Bandwidth(1gbps)>Choose ipv4 and ipv6 address>Customer BGP ASN>MTU(Bytes 9000)>copy the OCID of the Fast connect>
+2:Go to fabric Equinix in browser> Go to OCI infrastructure Fast connect and click on create connection>click Port>select location as Ashburn>Click on port which is assigned>select the destination as Ashburn>give valn id as 3031>Paste the virtual circuit ocid (the fast connect ocid which is copied)>Submit Order
+3:Login into svc server and ping the VM and check weather the traffic is going via fast connect :command : mtr 10.0.1.5
+
