@@ -128,6 +128,15 @@ Forwarding DNS Resolver
 1:Forwarding DNS Resolver from one VCN to Another:  Networking>VCN>Private Resolver Details>Endpoints>Create EndPoint>Name(Forwarding)>Compartment(Select Comaprtment and choose subnet)> Add Ip Address
 2:Add Rules: Networking>VCN>Private Resolver Details>Rules>Manage Rules>Rule Condition(Domains)>Domains(WWW.example.com)>Source EndPoint(Forwarding)>Destination Ip Address(Provide the Ip Address)
 
-Geolocation steering
+Geolocation steering:
+Create a geolocation traffic management policy that distributes DNS traffic to different endpoints based on the location of the end user
 1:Observilabilityandmanagement>Monitering>HealthChecks>create health check>name of health check>compartement>Targets(choose targets)>Vantagepoints(choose vantage points)>Request Type(Http)>Method(GET)>Timeout Interval(30 sec)
 2:Networking>DNS Management>Traffic Steering Policies>Create Traffice management policies>geolocation steering>Policy Name(Give the name of policy)>Answerpoolname(Name of Pool)>Type(TypeA,B,C)>Rdata(put the ip address)>geolocation steering rules(Select geolocation)>Pool-Prority(choose the location prority)>Attach Health check>Select Existing>Request type(Http)>Compartment(Choose compartment)>health check(choose the backend)Attach domain(select domain)
+
+Site-to-Site VPN
+To Create the site-to-site VPN:	
+1:Create a CPE:Networking>Customer connectivity>Customer Premises equipment>Create CPE>Name(Give a name of CPE)>Ip Address(Give the Ip address of CPE of BGP)>Vendor(choose vendor Liebreswan)>Platform/Version (Choose version)>Create CPE
+2:Site-To Site-VPN-Tunnel:Create Ipsec Tunnel>Name(Give the name)>Customer-premises equipment(Choose the CPE which was created in step-1)DRG-Gateway(Choose the DRG)>Route to your on prem device(Give the VCN ID)>Name(Give the tunnel name)>choose the BGP as routing type>BGP-ASN(choose 65001pvt ASN)> Ipv4 inside tunnel interface (choose ip-address for ip tunnel)
+3:Skip source destination check: go to CPE Instance>Attached VNICS>edit VNIC>choose Skip source destination check
+4:Follow the below link to configure the liberswan in CPE Instance 
+https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/libreswan.htm
