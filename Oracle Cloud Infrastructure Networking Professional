@@ -146,4 +146,20 @@ To Create the Fast-Connect Via private peering :
 1:Create a CPE:Networking>Customer connectivity>Fast Connect>Create connection>Fast connect>partner(choose Equinix fabric)>Choose DRG>Provisioned Bandwidth(1gbps)>Choose ipv4 and ipv6 address>Customer BGP ASN>MTU(Bytes 9000)>copy the OCID of the Fast connect>
 2:Go to fabric Equinix in browser> Go to OCI infrastructure Fast connect and click on create connection>click Port>select location as Ashburn>Click on port which is assigned>select the destination as Ashburn>give valn id as 3031>Paste the virtual circuit ocid (the fast connect ocid which is copied)>Submit Order
 3:Login into svc server and ping the VM and check weather the traffic is going via fast connect :command : mtr 10.0.1.5
+Fast-Connect Via public peering :
+1:Create a CPE:Networking>Customer connectivity>Fast Connect>Create connection>Fast connect>partner(choose Equinix fabric)>Name (Give name for fast connect)>Choose connection as public> Choose DRG>Provisioned Bandwidth(1gbps)>Choose ipv4>Customer BGP ASN(394749)>MTU(Bytes 9000)>copy the OCID of the Fast connect>
+2:Go to fabric Equinix in browser> Go to OCI infrastructure Fast connect and click on create connection>click Port>select location as Ashburn>Click on port which is assigned>select the destination as Ashburn>give valn id as 3031>Paste the virtual circuit ocid (the fast connect ocid which is copied)>Submit Order
+3:Login into svc server and ping the VM and check whether	 the traffic is going via fast connect :command : mtr object storage 
 
+Connecting oci-to-Azure :
+To Create a connection between Azure to oci via azure fast connect:
+follow the below link to connect the oci to azure end to end 
+
+https://learn.microsoft.com/en-us/azure/virtual-machines/workloads/oracle/configure azure-oci-networking
+1:Attach the oci VCN to DRG which should be created and attach DRG to Route rule by given VCN Range 
+2:Create a Subnet Gateway in Azure : Go to the Virtual Network>Subnets>Gateway Subnet(create a gateway subnet with default values)
+2:Create a virtual network Gateway in Azure : Home > Create a resource>Market Place> Virtual Network Gateway > Name(give the name)>Select the EXPRESSROUTE> Select Standard >VCN(Select the VCN> Subnet(select the Subnet gateway)>Create a new public ip address Ipv4>click submit.
+3:Create ExpressRoute in Azure: Create a resource>Market Place>ExpressRoute>Resource Group(OCIAzureInternetConnect-Compartement)>Instance Details>Name(ExpressroutetoICI-Instance Name)>Next>Provider(Oracle Cloud Fast Connect)>Peering Location(Choose the location)>Bandwidth(Choose the speed as 1gbps)>Create >Copy the Service key
+4: Create the Fast connect in OCI: Networking>Customer Connectivity>Fast Connect>Create Fast connect>Connection Type (Fast Connect Partner)>Choose the Partner(Microsoft Azure Partner>Next>name(Give the Name)>check the Private Virtual Circuit  >Check the All Traffic >DRG(Select the DRG)>Bandwidth(1gbps)>Partner Service Key(Paste the service key taken from the Azure )>Give the BGP Address of four >Create 
+5:Create the Connection in Azure : Create a resource>Market Place>Connection>Resource Group(OCIAzureInternetConnect-Compartement)>Instance Details>Name(Connection)>Next>VGN(Virtual Network Gateway)>EXPRESSROUTE Circuit(Choose EXPRESSROUTE )>Create
+6:Try to ping the instance 
