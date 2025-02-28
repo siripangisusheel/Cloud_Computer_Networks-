@@ -163,3 +163,15 @@ https://learn.microsoft.com/en-us/azure/virtual-machines/workloads/oracle/config
 4: Create the Fast connect in OCI: Networking>Customer Connectivity>Fast Connect>Create Fast connect>Connection Type (Fast Connect Partner)>Choose the Partner(Microsoft Azure Partner>Next>name(Give the Name)>check the Private Virtual Circuit  >Check the All Traffic >DRG(Select the DRG)>Bandwidth(1gbps)>Partner Service Key(Paste the service key taken from the Azure )>Give the BGP Address of four >Create 
 5:Create the Connection in Azure : Create a resource>Market Place>Connection>Resource Group(OCIAzureInternetConnect-Compartement)>Instance Details>Name(Connection)>Next>VGN(Virtual Network Gateway)>EXPRESSROUTE Circuit(Choose EXPRESSROUTE )>Create
 6:Try to ping the instance 
+
+ Connecting oci-to-Google-Cloud:
+ To Create a connection between Google Cloud to oci via fast connect:
+1:Select the Project in Google cloud (go to google cloud click on the menu beside the google cloud 
+2:Create a VPC (Search for Networking and select VPC)>Create VPC Network> Name(Give the name of VPC)>Check for the below and select the region accordingly which is compatible  in gcp >Check on ipv4 and ipv6 stack and give the ip address>Ipv access type(Internal)>Ipv4 rules check on the ICMP rules>Create
+3:Adding ICMP for IPV6: go to the VPC which is created initially>Go to Subnets>Firewall>Add the Firewall rule>Name(Give the name)>Targets(All instances in the network)>Source Filter(IPV6 Range)>Source Ipv6 Ranges is ::/0>Specified Protocols and ports (Other 58)>Create
+4:Create a Compute Instance:(Search for Networking and select Compute Engine)>Create Instance Name(Give the name of Instance)>Choose the region>Choose the machine configuration>Networking>Network interface Card(VirtIO)>Network Interface(Select the VPC&Subnet Which was created)>checkIPV6 Dual stack>Create.
+5:Create a Interconnect:(Search for Networking and select Interconnect )>Create Vlan Attachment>Click on Partner Interconnect>Continue>Click on We already have service Provider>Select the VPC and region which was created>VLAN A >Create router>Name(Give the name)>Create>Attachment Name(Give the Specific Name)>IPV6 Dual Stack>MTU(1500)>VLAN B (Same as VLAN A)>Click on Enable for Pre activate VLAN Attachments >Copy the Service Key from main connection 
+Create the Fast connect on OCI-Side: Go to DRG>Virtual Circuit >create Fast-Connect >partner Virtual Circuit >All Traffic >Select the value(Select the DRG) >Provisioned Bandwidth(1GBPS)>Paste the Partner key >MTU 1500>Create
+
+Transitive Routing On-Prem to OCI to Remote Region via RPC
+Networking>Customer Connectivity>Dynamic Routing gateways>Dynamic Routing Gateway details >Import Route distribution details >Add Import distributions>Priority(1)>Match Type(Attachment)>Remote Peering Attachment choose the attachment of other region which you want to connect>RPC Import distribution> Add Import distributions>Priority(1)>Match Type(Attachment)>IPsec Tunnel choose the attachment of other region which you want to connect
