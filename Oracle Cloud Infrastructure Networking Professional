@@ -140,6 +140,7 @@ To Create the site-to-site VPN:
 3:Skip source destination check: go to CPE Instance>Attached VNICS>edit VNIC>choose Skip source destination check
 4:Follow the below link to configure the liberswan in CPE Instance 
 https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/libreswan.htm
+Bulding the AWS-TO-OCI Tunnel : https://www.ateam-oracle.com/post/oci-to-aws-ipsec-tunnel-using-the-built-in-vpn-service
 
 Fast-Connect
 To Create the Fast-Connect Via private peering :	
