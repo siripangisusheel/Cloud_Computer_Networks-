@@ -177,3 +177,91 @@ Create the Fast connect on OCI-Side: Go to DRG>Virtual Circuit >create Fast-Conn
 
 Transitive Routing On-Prem to OCI to Remote Region via RPC
 Networking>Customer Connectivity>Dynamic Routing gateways>Dynamic Routing Gateway details >Import Route distribution details >Add Import distributions>Priority(1)>Match Type(Attachment)>Remote Peering Attachment choose the attachment of other region which you want to connect>RPC Import distribution> Add Import distributions>Priority(1)>Match Type(Attachment)>IPsec Tunnel choose the attachment of other region which you want to connect
+
+
+1. Site-to-Site VPN
+A Site-to-Site VPN connects your on-premises network to your OCI Virtual Cloud Network (VCN) over the public internet using IPSec tunnels, routed through a Dynamic Routing Gateway (DRG).
+Prerequisites: A DRG attached to your VCN, and the public IP address of your on-premises VPN device (the "CPE").
+Step 1 — Register the on-premises device as a CPE object in OCI.
+Go to Networking > Customer Connectivity > Customer Premises Equipment > Create CPE. Provide a Name for the CPE, the IP Address of the on-premises BGP-capable VPN device, and select the Vendor (Libreswan) and the matching Platform/Version. Click Create CPE. This step just registers the device's identity in OCI — it does not configure anything on the device itself.
+Step 2 — Create the IPSec tunnel(s).
+Go to Create IPSec Tunnel and configure:
+Name — a descriptive name for the tunnel
+Customer-Premises Equipment — select the CPE object created in Step 1
+DRG — select the DRG attached to your VCN
+Routes to your on-premises network — enter the CIDR range of your on-premises network (needed only for static routing; skip if using BGP)
+Tunnel Name — name for this specific tunnel
+Routing Type — choose BGP (dynamic routing, recommended over static routing for redundancy and automatic failover)
+BGP IPv4 ASN — use the private ASN 65001 (or your organization's assigned private ASN)
+IPv4 Inside Tunnel Interface — assign the /30 IP addresses for the tunnel interface on both the OCI and CPE ends
+OCI provisions two tunnels per IPSec connection by default for redundancy — configure both.
+Step 3 — Disable the source/destination check on the CPE-facing VNIC.
+Go to the on-premises-facing Compute Instance (if your CPE is a VM) > Attached VNICs > Edit VNIC, and enable Skip Source Destination Check. This is required because the instance will be routing/forwarding traffic that isn't addressed to itself, which OCI blocks by default.
+Step 4 — Configure Libreswan on the CPE.
+Follow Oracle's official guide to install and configure Libreswan with the tunnel details generated in Step 2: https://docs.oracle.com/en-us/iaas/Content/Network/Concepts/libreswan.htm
+
+Reference architectures for AWS connectivity:
+OCI-to-AWS via static routing: https://www.ateam-oracle.com/post/oci-to-aws-ipsec-tunnel-using-the-built-in-vpn-service
+OCI-to-AWS via BGP routing: https://towardsaws.com/site-to-site-vpn-between-oci-and-aws-9d84071eaa8c
+
+2. FastConnect via Private Peering
+FastConnect provides a dedicated, private network connection between OCI and your on-premises environment (bypassing the public internet), provisioned through a connectivity partner — Equinix Fabric in this case. Private peering exposes your OCI VCN's private IP space.
+Step 1 — Create the FastConnect connection in OCI.
+Go to Networking > Customer Connectivity > FastConnect > Create Connection > FastConnect Partner. Select Equinix Fabric as the partner, select your DRG, set Provisioned Bandwidth (e.g., 1 Gbps), select IPv4 and IPv6 addressing as needed, enter your Customer BGP ASN, and set MTU to 9000 bytes (jumbo frames, standard for FastConnect). Create the connection, then copy the OCID of the FastConnect resource — you'll need this to complete provisioning on the partner side.
+Step 2 — Provision the cross-connect in Equinix Fabric.
+Log in to Equinix Fabric > OCI Infrastructure FastConnect > Create Connection. Click Port, select location Ashburn, and click the port assigned to your account. Select Ashburn as the destination as well. Enter VLAN ID 3031 (or your assigned VLAN), paste the FastConnect OCID copied in Step 1 as the virtual circuit identifier, and Submit Order. This is what actually completes the physical/logical circuit between Equinix and OCI.
+Step 3 — Verify traffic is routing over FastConnect.
+Log in to the service (svc) server and run: mtr 10.0.1.5 (replace with the target VM's private IP). The mtr hop path should confirm traffic is traversing the private circuit rather than the public internet.
+
+3. FastConnect via Public Peering
+Public peering over FastConnect gives you private connectivity to OCI's public services (like Object Storage) without traversing the internet, while keeping your VCN's private address space isolated from the partner circuit.
+Step 1 — Create the FastConnect connection in OCI.
+Go to Networking > Customer Connectivity > FastConnect > Create Connection > FastConnect Partner. Select Equinix Fabric, give the connection a Name, choose Public as the connection type, select your DRG, set Provisioned Bandwidth (1 Gbps), select IPv4, enter Customer BGP ASN 394749 (Oracle's ASN used for public peering — confirm this matches your account's assignment), and set MTU to 9000 bytes. Copy the OCID of the FastConnect resource once created.
+Step 2 — Provision the cross-connect in Equinix Fabric.
+Same as private peering: log in to Equinix Fabric > OCI Infrastructure FastConnect > Create Connection > Port > location Ashburn > select the assigned port > destination Ashburn > VLAN ID 3031 > paste the FastConnect OCID > Submit Order.
+Step 3 — Verify traffic is routing over FastConnect.
+Log in to the svc server and run mtr against an OCI Object Storage endpoint (e.g., mtr <region>.objectstorage.oraclecloud.com) to confirm the path uses the FastConnect circuit rather than the public internet.
+
+4. OCI-to-Azure Connectivity (via Azure ExpressRoute / OCI FastConnect)
+This establishes a private, high-throughput connection between an OCI VCN and an Azure Virtual Network using Oracle FastConnect paired with Azure ExpressRoute. Full reference: https://learn.microsoft.com/en-us/azure/virtual-machines/workloads/oracle/configure-azure-oci-networking
+Step 1 — Prepare OCI routing.
+Attach your VCN to a DRG (create the DRG first if it doesn't exist), and add a route rule to your VCN's route table pointing traffic destined for the Azure VNet's CIDR range to the DRG.
+Step 2 — Create a Gateway Subnet in Azure.
+In the Azure Virtual Network, go to Subnets > Gateway Subnet and create it using the default settings. This subnet is reserved exclusively for the Virtual Network Gateway.
+Step 3 — Create a Virtual Network Gateway in Azure.
+Go to Create a Resource > Marketplace > Virtual Network Gateway. Give it a Name, set Gateway Type to ExpressRoute, SKU to Standard, select your Virtual Network, select the Gateway Subnet created in Step 2, and create a new Public IP address (IPv4). Submit.
+Step 4 — Create an ExpressRoute circuit in Azure.
+Go to Create a Resource > Marketplace > ExpressRoute. Select the Resource Group (e.g., OCIAzureInternetConnect-Compartment), give it a Name (e.g., ExpressRoute-to-OCI), click Next, and select Oracle Cloud FastConnect as the Provider. Choose the Peering Location, set Bandwidth (1 Gbps), and Create. Once provisioned, copy the Service Key — this is what links the Azure circuit to the OCI side.
+Step 5 — Create the FastConnect connection in OCI.
+Go to Networking > Customer Connectivity > FastConnect > Create Connection > FastConnect Partner. Choose Microsoft Azure as the partner, click Next, give it a Name, check Private Virtual Circuit, check All Traffic, select your DRG, set Bandwidth (1 Gbps), paste the Partner Service Key copied from Azure in Step 4, and configure the four BGP peering addresses (a /30 pair for the primary and secondary connections, per Microsoft's ExpressRoute peering requirements). Create.
+Step 6 — Complete the connection in Azure.
+Go to Create a Resource > Marketplace > Connection. Select the Resource Group (OCIAzureInternetConnect-Compartment), give it a Name, click Next, select the Virtual Network Gateway created in Step 3, select the ExpressRoute Circuit created in Step 4, and Create. This is the step that actually binds the gateway to the circuit and brings up BGP.
+Step 7 — Validate.
+Once both sides show the connection as Provisioned/Connected and BGP routes are exchanged, ping an instance across the connection to confirm end-to-end reachability.
+
+5. OCI-to-Google Cloud Connectivity (via Partner Interconnect)
+This connects an OCI VCN to a Google Cloud VPC using OCI FastConnect paired with Google Cloud Partner Interconnect.
+Step 1 — Select the target Google Cloud project.
+In the Google Cloud Console, use the project selector next to the Google Cloud logo to choose (or create) the project you'll deploy into.
+Step 2 — Create a VPC.
+Go to Networking > VPC Network > Create VPC Network. Give it a Name, and choose a region compatible with your interconnect location. Enable the IPv4 and IPv6 dual stack and assign the IP address range, set IP Access Type to Internal, and under IPv4 firewall rules, enable the ICMP rule (needed for connectivity testing later). Create.
+Step 3 — Add an IPv6 firewall rule for ICMP.
+Go to the VPC created in Step 2 > Subnets > Firewall > Add Firewall Rule. Give it a Name, set Targets to All instances in the network, set Source Filter to IPv6 Range, set Source IPv6 Ranges to ::/0, and under Protocols and Ports select Specified protocols and ports > Other > protocol 58 (ICMPv6). Create. This mirrors Step 2's IPv4 ICMP allowance for the IPv6 stack.
+Step 4 — Create a Compute Instance for testing.
+Go to Networking > Compute Engine > Create Instance. Give it a Name, choose the Region and machine configuration, and under Networking set the Network Interface Card type to VirtIO, select the VPC and Subnet created above, and enable IPv6 dual stack. Create.
+Step 5 — Create the Partner Interconnect VLAN attachment.
+Go to Networking > Interconnect > Create VLAN Attachment. Choose Partner Interconnect > Continue > I already have a service provider. Select the VPC and region created above. For VLAN A, create a new Cloud Router (give it a Name and Create), then configure the Attachment Name, enable IPv6 dual stack, set MTU to 1500, and configure VLAN B identically to VLAN A. Enable Pre-activate VLAN attachments so the attachment comes up automatically once the partner side is provisioned. Copy the Service Key from the resulting connection details.
+Step 6 — Create the FastConnect connection in OCI.
+Go to your DRG > Virtual Circuits > Create Virtual Circuit. Select Partner Virtual Circuit type, check All Traffic, select the DRG, set Provisioned Bandwidth (1 Gbps), paste the Google Partner Interconnect key from Step 5, set MTU to 1500 (matching the Google side), and Create.
+Step 7 — Validate.
+Once BGP comes up on both the Cloud Router and the OCI virtual circuit, ping the Compute Engine instance from an OCI instance (or vice versa) to confirm connectivity.
+
+6. Transitive Routing: On-Premises → OCI → Remote Region (via RPC)
+This lets on-premises traffic that reaches OCI in one region be routed onward, through the DRG, to a peered VCN in a different OCI region via a Remote Peering Connection (RPC) — without requiring a direct connection from on-premises to the remote region.
+Prerequisites: A DRG in the local region with both an IPSec/FastConnect attachment to on-premises and an RPC attachment to the remote region already established.
+Step 1 — Add an import route distribution for the RPC attachment.
+Go to Networking > Customer Connectivity > Dynamic Routing Gateways > select your DRG > Route Distribution > Import Route Distribution > Add Import Distribution. Set Priority to 1, Match Type to Attachment, and for the Attachment select the Remote Peering Connection attachment for the remote region you want to reach. This tells the DRG to accept and propagate routes learned from the remote region.
+Step 2 — Add a matching import route distribution for the on-premises (IPSec) attachment.
+Repeat: Add Import Distribution, set Priority to 1, Match Type to Attachment, and this time select the IPSec Tunnel (or FastConnect) attachment connecting to on-premises. This ensures routes learned from on-premises are made available for redistribution toward the remote region.
+Result: With both import distributions in place and applied to the DRG's route table, the DRG will exchange and propagate routes bidirectionally — on-premises traffic can now reach resources in the remote OCI region through the local DRG and the RPC, and vice versa.
+A few general notes worth keeping in mind across all of these: BGP-based routing (used in Steps 1, 4, and 5 above) is generally preferable to static routing because it handles failover and route propagation automatically; MTU mismatches between the two ends of a connection (e.g., 9000 vs. 1500) are a common cause of intermittent connectivity issues, so always confirm both sides agree; and after any new connection is provisioned, checking the DRG's route table and route distribution rules is usually the fastest way to diagnose why traffic isn't flowing as expected.
